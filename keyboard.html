@@ -1,0 +1,16 @@
+//Listens to app for keyboard actions
+    addEventListener("keydown", function (e) {
+
+        if (e.keyCode == 38) { //  (key: up arrow)
+            p1y-=10;
+        }
+        if (e.keyCode == 40) { //  (key: down arrow)
+            p1y+=10;
+        }
+        if (e.keyCode == 37) { //  (key: left arrow)
+            p1x-=10;
+        }
+        if (e.keyCode == 39) { //  (key: right arrow)
+            p1x+=10;
+        }
+    }, false);

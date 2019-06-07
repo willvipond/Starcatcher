@@ -27,19 +27,10 @@ var star = {
         obj._img.src="images/star.jpg";
         return obj;
     },
- setSize: function(sw,sh){
-        this._sw=w;
-        this._sh=sh;
-    },
     
     // and this just below the other functions in the star class
     visible: function() {
         return this._visible;
-    },
-
-
-    setImage: function(img){
-        this._img.src=img;
     },
 
     //Update the new x and y of the star based on the speed.
@@ -50,7 +41,44 @@ var star = {
         this._y+=this._ySpeed;
     },
 };
+var badStar = {
+    _x: null,
+    _y: null,
+    _xSpeed: null,
+    _ySpeed: null,
+    _sh: 40,
+    _sw: 40,
+// add this to the variable list at the top of the star class
+    _visible: true,
+    
 
+    //Create new star object with given starting position and speed
+    //class functions exist to set other private variables
+    //All inputs are double and function returns a new star
+    create: function (x, y, xSpeed, ySpeed) {
+        var obj = Object.create(this);
+        obj._x = x;
+        obj._y = y;
+        obj._xSpeed=xSpeed;
+        obj._ySpeed=ySpeed;
+        obj._img = new Image();
+        obj._img.src="images/badStar.jpg";
+        return obj;
+    },
+    
+    // and this just below the other functions in the star class
+    visible: function() {
+        return this._visible;
+    },
+
+    //Update the new x and y of the star based on the speed.
+    //drawing functionality is left for calling class
+    //no input or return
+    update: function () {
+        this._x+=this._xSpeed;
+        this._y+=this._ySpeed;
+    },
+};
 
 window.onload = function() {
     //load canvas
@@ -85,18 +113,28 @@ window.onload = function() {
         //  and speeds into the array.
         starArray.push(star.create(20,i+50,Math.random()*5,Math.random()*5));
     }
+    //load bad star
+    var badStarCount=5;
+    var badStarArray=[];
+
+    // Create an array of stars
+    for (var i = 0; i < badStarCount; i++) {
+        // this assigns each element in the array all the information for the star by 
+        // using the 'star' class, pass the starting x,y locations 
+        //  and speeds into the array.
+        badStarArray.push(badStar.create(20,i+50,Math.random()*5,Math.random()*5));
+    }
     
 
     // moving stars around the screen and update the players movement
 
     function starsUpdate () {
         // to move the stars around
-        ctx.drawImage(background,0,0,w,h);
         
     //  draw star on screen only if visible
         for (var i = 0; i < starCount; i++) {
             // this checks to see if the star is visible
-    if (starArray[i].visible()) {
+        if (starArray[i].visible()) {
             starArray[i].update();
             ctx.drawImage(starArray[i]._img, starArray[i]._x, starArray[i]._y, starArray[i]._sw, starArray[i]._sh);
             if (starArray[i]._x>w || starArray[i]._x<0) {starArray[i]._xSpeed = -starArray[i]._xSpeed}
@@ -106,12 +144,25 @@ window.onload = function() {
             if (Math.abs(p2x-starArray[i]._x)<20 & Math.abs(p2y-starArray[i]._y)<20) {scoring(i,2);}
         }
         }//endFor
+
+        for (var i = 0; i < badStarCount; i++) {
+                // this checks to see if the star is visible
+        if (badStarArray[i].visible()) {
+            badStarArray[i].update();
+            ctx.drawImage(badStarArray[i]._img, badStarArray[i]._x, badStarArray[i]._y, badStarArray[i]._sw, badStarArray[i]._sh);
+            if (badStarArray[i]._x>w || badStarArray[i]._x<0) {badStarArray[i]._xSpeed = -badStarArray[i]._xSpeed}
+            if (badStarArray[i]._y>h || badStarArray[i]._y<0) {badStarArray[i]._ySpeed = -badStarArray[i]._ySpeed}
+
+            if (Math.abs(p1x-badStarArray[i]._x)<20 & Math.abs(p1y-badStarArray[i]._y)<20) {scoring(i,1);}
+            if (Math.abs(p2x-badStarArray[i]._x)<20 & Math.abs(p2y-badStarArray[i]._y)<20) {scoring(i,2);}
+        }
+        }//endFor
            
         ctx.drawImage(ship1, p1x, p1y, 40, 40);
         ctx.drawImage(ship2, p2x, p2y, 40, 40);
     }
     
-var kesyDown = [];
+var keysDown = [];
     //Listens to app for keyboard actions
     addEventListener("keydown", function (e) {
          // start the game with keyboard command
